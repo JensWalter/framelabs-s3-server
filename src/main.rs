@@ -1,7 +1,12 @@
 use aws_config::Region;
 use aws_sdk_s3::{config::SharedCredentialsProvider, Client};
 use aws_util::StaticCredentials;
-use axum::{extract::{Query, State}, http::StatusCode, routing::get, Router};
+use axum::{
+    extract::{Query, State},
+    http::StatusCode,
+    routing::get,
+    Router,
+};
 use image::{io::Reader as ImageReader, GenericImage};
 use libheif_rs::{
     ColorSpace, CompressionFormat, DecodingOptions, EncodingOptions, HeifContext, LibHeif,
@@ -19,7 +24,10 @@ struct QueryParams {
 }
 
 #[axum::debug_handler]
-async fn handler( Query(query): Query<QueryParams>,State(config): State<Config>) -> Result<Vec<u8>, StatusCode> {
+async fn handler(
+    Query(query): Query<QueryParams>,
+    State(config): State<Config>,
+) -> Result<Vec<u8>, StatusCode> {
     // check fot matching secrets
     if query.secret != config.secret {
         return Err(StatusCode::FORBIDDEN);
@@ -122,8 +130,9 @@ async fn main() {
     let config = aws_config::SdkConfig::builder()
         .use_dual_stack(true)
         .region(Region::new(region))
-        .credentials_provider(SharedCredentialsProvider::new(StaticCredentials{
-            access_key,secret_key
+        .credentials_provider(SharedCredentialsProvider::new(StaticCredentials {
+            access_key,
+            secret_key,
         }))
         .build();
 

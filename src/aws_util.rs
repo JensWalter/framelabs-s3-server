@@ -25,8 +25,6 @@ impl ProvideCredentials for StaticCredentials {
     where
         Self: 'a,
     {
-        aws_credential_types::provider::future::ProvideCredentials::new(
-            self.load_credentials(),
-        )
+        aws_credential_types::provider::future::ProvideCredentials::new(self.load_credentials())
     }
 }
