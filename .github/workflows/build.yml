@@ -7,7 +7,7 @@ on:
 jobs:
   fmt:
     permissions: read-all
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
     - uses: actions/cache@v4
@@ -29,7 +29,7 @@ jobs:
       uses: actions-rust-lang/rustfmt@v1
   clippy:
     permissions: read-all
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
       with:
@@ -55,7 +55,7 @@ jobs:
       run: cargo clippy --all -- -D warnings
   test:
     permissions: read-all
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
     - uses: actions/cache@v4
@@ -79,7 +79,7 @@ jobs:
   build:
     permissions: read-all
     needs: [fmt,clippy,test]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
     - uses: actions/cache@v4
