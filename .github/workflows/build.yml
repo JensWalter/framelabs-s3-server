@@ -74,7 +74,7 @@ jobs:
       run: cargo test -q
   build:
     permissions: read-all
-    requires: [fmt,clippy,test]
+    depends-on: [fmt,clippy,test]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
