@@ -16,8 +16,12 @@ aws-sdk-s3 = { version = "1", features = ["behavior-version-latest"] }
 aws-smithy-types-convert = { version = "0.60", features = ["convert-chrono"] }
 axum = { version = "0.7", features = ["macros"] }
 image = { version = "0.25" }
-libheif-rs = "1"
 rand = "0.8.5"
 tokio = { version = "1", features = ["full"] }
 flate2 = "1"
 serde = { version = "1", features = ["derive"] }
+# dependency kept back due to OS restriction 
+# Raspberry OS libheif v1.15
+# ubuntu 24.04 v1.17
+libheif-rs = { version = "=0.20.0" }
+libheif-sys = { version = "=1.14" }

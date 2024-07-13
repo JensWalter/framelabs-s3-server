@@ -138,7 +138,7 @@ async fn main() {
 
     let client = Client::new(&config);
     let cfg = Config {
-        bucket_name: std::env::var("BUCKET_NAME").unwrap(),
+        bucket_name: std::env::var("BUCKET_NAME").expect("BUCKET_NAME not set in environment"),
         prefix: std::env::var("PREFIX").ok(),
         client,
         secret: std::env::var("SECRET").ok(),
