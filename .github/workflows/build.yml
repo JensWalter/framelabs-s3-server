@@ -50,7 +50,7 @@ jobs:
         components: clippy
         cache: false
     - name: install deps
-      run: apt-get install libheif-dev
+      run: sudo apt-get install libheif-dev
     - name: Run clippy
       run: cargo clippy --all -- -D warnings
   test:
@@ -73,7 +73,7 @@ jobs:
       with:
         cache: false
     - name: install deps
-      run: apt-get install libheif-dev
+      run: sudo apt-get install libheif-dev
     - name: Cargo Test
       run: cargo test -q
   build:
@@ -97,7 +97,7 @@ jobs:
       with:
         cache: false
     - name: install deps
-      run: apt-get install libheif-dev
+      run: sudo apt-get install libheif-dev
     - run: cargo build --release
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
