@@ -14,6 +14,16 @@ A S3 based image provider for the framelabs picture frame
 
 # deployment docker
 
+```bash
+docker build -t framelabs-s3-server .
+docker run -p 8080:8080 \
+    -e BUCKET_NAME=photos-bucket \
+    -e ACCESS_KEY=AKIA... \
+    -e SECRET_KEY=YQOp... \
+    -e PREFIX=by-year/ \
+    framelabs-s3-server
+```
+
 # deployment systemd
 
 1) build with cargo

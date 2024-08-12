@@ -51,28 +51,35 @@ async fn handler(
     //detect heic
     let img = if *suffix == "heic" {
         let lib_heif = LibHeif::new();
-        let ctx = HeifContext::read_from_bytes(&bytes).unwrap();
-        let handle = ctx.primary_image_handle().unwrap();
-        println!("heic: {} {}", handle.width(), handle.height());
-        let mut opts = DecodingOptions::new().unwrap();
-        opts.set_convert_hdr_to_8bit(true);
-        opts.set_ignore_transformations(true);
-        let image = lib_heif
-            .decode(&handle, ColorSpace::Undefined, Some(opts))
-            .unwrap();
-        let mut encoder = lib_heif
-            .encoder_for_format(CompressionFormat::Jpeg)
-            .unwrap();
-        let encoding_options: EncodingOptions = Default::default();
-        let mut context = HeifContext::new().unwrap();
-        context
-            .encode_image(&image, &mut encoder, Some(encoding_options))
-            .unwrap();
-        let jpeg_bytes = context.write_to_bytes().unwrap();
-        let cursor = Cursor::new(jpeg_bytes);
-        ImageReader::with_format(cursor, image::ImageFormat::Jpeg)
-            .decode()
-            .unwrap()
+        match HeifContext::read_from_bytes(&bytes) {
+            Ok(ctx) => {
+                let handle = ctx.primary_image_handle().unwrap();
+                println!("heic: {} {}", handle.width(), handle.height());
+                let mut opts = DecodingOptions::new().unwrap();
+                opts.set_convert_hdr_to_8bit(true);
+                opts.set_ignore_transformations(true);
+                let image = lib_heif
+                    .decode(&handle, ColorSpace::Undefined, Some(opts))
+                    .unwrap();
+                let mut encoder = lib_heif
+                    .encoder_for_format(CompressionFormat::Jpeg)
+                    .unwrap();
+                let encoding_options: EncodingOptions = Default::default();
+                let mut context = HeifContext::new().unwrap();
+                context
+                    .encode_image(&image, &mut encoder, Some(encoding_options))
+                    .unwrap();
+                let jpeg_bytes = context.write_to_bytes().unwrap();
+                let cursor = Cursor::new(jpeg_bytes);
+                ImageReader::with_format(cursor, image::ImageFormat::Jpeg)
+                    .decode()
+                    .unwrap()
+            }
+            Err(err) => {
+                eprintln!("could not decode heif: {err:?}");
+                return Err(StatusCode::INTERNAL_SERVER_ERROR);
+            }
+        }
     } else {
         // any other format
         let cursor = Cursor::new(bytes);
@@ -148,5 +155,32 @@ async fn main() {
     let app = Router::new().route("/", get(handler)).with_state(cfg);
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
     println!("listening on {}", listener.local_addr().unwrap());
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(listener, app)
+        .with_graceful_shutdown(shutdown_signal())
+        .await
+        .unwrap();
+}
+
+async fn shutdown_signal() {
+    let ctrl_c = async {
+        tokio::signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
+    };
+
+    #[cfg(unix)]
+    let terminate = async {
+        tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
+            .expect("failed to install signal handler")
+            .recv()
+            .await;
+    };
+
+    #[cfg(not(unix))]
+    let terminate = std::future::pending::<()>();
+
+    tokio::select! {
+        _ = ctrl_c => {},
+        _ = terminate => {},
+    }
 }
