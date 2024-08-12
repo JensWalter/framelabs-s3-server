@@ -106,6 +106,8 @@ async fn handler(
     let bytes = background.to_vec();
     // convert
     let x = to_raw(bytes);
+    println!("image converted: {:?}", now.elapsed());
+    now = Instant::now();
     let z = compress(x);
     println!("image compressed: {:?}", now.elapsed());
     println!("response latency: {:?}", start.elapsed());

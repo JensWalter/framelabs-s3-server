@@ -23,8 +23,9 @@ pub fn to_raw(image: Vec<u8>) -> Vec<u8> {
     buf
 }
 
+/// compress the byte array with zlib and conpression level 9
 pub fn compress(raw: Vec<u8>) -> Vec<u8> {
-    let mut e = ZlibEncoder::new(Vec::new(), Compression::new(9));
+    let mut e = ZlibEncoder::new(Vec::new(), Compression::new(1));
     e.write_all(&raw).unwrap();
     e.finish().unwrap()
 }
