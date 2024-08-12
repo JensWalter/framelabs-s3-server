@@ -7,7 +7,7 @@ use axum::{
     routing::get,
     Router,
 };
-use image::{io::Reader as ImageReader, GenericImage};
+use image::{GenericImage, ImageReader};
 use libheif_rs::{
     ColorSpace, CompressionFormat, DecodingOptions, EncodingOptions, HeifContext, LibHeif,
 };
