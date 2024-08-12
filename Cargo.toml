@@ -23,5 +23,5 @@ serde = { version = "1", features = ["derive"] }
 # dependency kept back due to OS restriction 
 # Raspberry OS libheif v1.15
 # ubuntu 24.04 v1.17
-libheif-rs = { version = "=0.20.0" }
-libheif-sys = { version = "=1.14" }
+libheif-rs = { version = "=1.0.2" }
+libheif-sys = { version = "=2.1" }
