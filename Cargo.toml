@@ -3,6 +3,7 @@ name = "framelabs-s3-server"
 version = "1.0.0"
 edition = "2021"
 license = "MIT"
+rust-version = "1.81"
 
 [dependencies]
 aws-config = { version = "1", default-features = false, features = [
@@ -14,7 +15,7 @@ aws-config = { version = "1", default-features = false, features = [
 aws-credential-types = "1"
 aws-sdk-s3 = { version = "1", features = ["behavior-version-latest"] }
 aws-smithy-types-convert = { version = "0.60", features = ["convert-chrono"] }
-axum = { version = "0.8", features = ["macros"] }
+axum = { version = "0.8", features = ["macros", "http2"] }
 image = { version = "0.25" }
 rand = "0.8.5"
 tokio = { version = "1", features = ["full"] }
