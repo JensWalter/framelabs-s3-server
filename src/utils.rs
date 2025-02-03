@@ -41,8 +41,8 @@ pub async fn get_random_image(config: &Config) -> (String, Vec<u8>) {
         .unwrap();
     let count = result.key_count.unwrap();
     let n = {
-        let mut rng = rand::thread_rng();
-        rng.gen_range(0..count)
+        let mut rng = rand::rng();
+        rng.random_range(0..count)
     };
     let all = result.contents();
     let obj = all.get(n as usize).unwrap();
