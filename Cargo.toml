@@ -17,7 +17,7 @@ aws-sdk-s3 = { version = "1", features = ["behavior-version-latest"] }
 aws-smithy-types-convert = { version = "0.60", features = ["convert-chrono"] }
 axum = { version = "0.8", features = ["macros", "http2"] }
 image = { version = "0.25" }
-rand = "0.8.5"
+rand = "0.9"
 tokio = { version = "1", features = ["full"] }
 flate2 = "1"
 serde = { version = "1", features = ["derive"] }
