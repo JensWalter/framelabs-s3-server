@@ -1,9 +1,9 @@
 [package]
 name = "framelabs-s3-server"
 version = "1.0.0"
-edition = "2021"
+edition = "2024"
 license = "MIT"
-rust-version = "1.81"
+rust-version = "1.85"
 
 [dependencies]
 aws-config = { version = "1", default-features = false, features = [
