@@ -1,5 +1,5 @@
 FROM ubuntu:24.04 AS builder
-RUN apt-get update && apt-get install -y zlib1g-dev librust-libheif-sys-dev build-essential curl  && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y zlib1g-dev librust-libheif-sys-dev build-essential curl cmake && rm -rf /var/lib/apt/lists/*
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 WORKDIR /app
