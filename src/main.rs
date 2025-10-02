@@ -1,11 +1,11 @@
 use aws_config::Region;
-use aws_sdk_s3::{config::SharedCredentialsProvider, Client};
+use aws_sdk_s3::{Client, config::SharedCredentialsProvider};
 use aws_util::StaticCredentials;
 use axum::{
+    Router,
     extract::{Query, State},
     http::StatusCode,
     routing::get,
-    Router,
 };
 use image::{GenericImage, ImageReader};
 use libheif_rs::{

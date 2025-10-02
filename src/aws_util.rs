@@ -1,4 +1,4 @@
-use aws_credential_types::{provider::ProvideCredentials, Credentials};
+use aws_credential_types::{Credentials, provider::ProvideCredentials};
 
 #[derive(Debug, Default)]
 pub struct StaticCredentials {

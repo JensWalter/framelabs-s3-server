@@ -1,5 +1,5 @@
 use crate::Config;
-use flate2::{write::ZlibEncoder, Compression};
+use flate2::{Compression, write::ZlibEncoder};
 use image::{DynamicImage, GrayImage};
 use rand::Rng;
 use std::io::Write;
