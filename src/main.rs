@@ -116,14 +116,14 @@ async fn handler(
     if std::env::var("ADD_FILENAME").is_ok() {
         let font_bytes = include_bytes!("../assets/fonts/Roboto-Regular.ttf");
         let font = FontRef::try_from_slice(font_bytes).unwrap();
-        let scale = PxScale { x: 20.0, y: 20.0 };
+        let scale = PxScale { x: 40.0, y: 40.0 };
 
         // calculate average brightness of the background where the text will be placed
-        let (text_w, text_h) = text_size(scale, &font, &filename);
+        let (text_w, text_h) = text_size(scale, &font, &key);
         let mut total_brightness: u64 = 0;
         let mut pixel_count: u64 = 0;
         let start_x = 10;
-        let start_y = 1170;
+        let start_y = 1150;
         let end_x = (start_x + text_w).min(background.width());
         let end_y = (start_y + text_h).min(background.height());
 
@@ -154,7 +154,7 @@ async fn handler(
             start_y as i32,
             scale,
             &font,
-            &filename,
+            &key,
         );
     }
     // rotate image

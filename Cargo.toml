@@ -9,11 +9,9 @@ rust-version = "1.87"
 aws-config = { version = "1", default-features = false, features = [
     "behavior-version-latest",
     "rt-tokio",
-    "client-hyper",
-    "rustls",
 ] }
 aws-credential-types = "1"
-aws-sdk-s3 = { version = "1", features = ["behavior-version-latest"] }
+aws-sdk-s3 = { version = "1",default-features = false, features = ["behavior-version-latest"] }
 axum = { version = "0.8", features = ["macros", "http2"] }
 cached = { version = "0.56", features = ["async"] }
 image = { version = "0.25" }
@@ -21,6 +19,7 @@ rand = "0.9"
 tokio = { version = "1", features = ["full"] }
 flate2 = "1"
 serde = { version = "1", features = ["derive"] }
+# libheif-rs = { version = "2" }
 libheif-rs = { version = "2", features = ["embedded-libheif"] }
 imageproc = "0.26"
 ab_glyph = "0.2"
