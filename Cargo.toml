@@ -11,7 +11,10 @@ aws-config = { version = "1", default-features = false, features = [
     "default-https-client",
 ] }
 aws-credential-types = "1"
-aws-sdk-s3 = { version = "1",default-features = false, features = ["behavior-version-latest"] }
+aws-sdk-s3 = { version = "1", default-features = false, features = [
+    "behavior-version-latest",
+    "sigv4a",
+] }
 axum = { version = "0.8", features = ["macros", "http2"] }
 cached = { version = "0.56", features = ["async"] }
 image = { version = "0.25" }
