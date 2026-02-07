@@ -118,6 +118,7 @@ async fn handler(
         let scale = PxScale { x: 80.0, y: 80.0 };
 
         let display_key = key.splitn(3, '/').last().unwrap_or(&key);
+        let display_key = display_key.rsplit_once('.').map(|(name, _)| name).unwrap_or(display_key);
 
         // calculate average brightness of the background where the text will be placed
         let (text_w, text_h) = text_size(scale, &font, display_key);
