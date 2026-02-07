@@ -56,8 +56,8 @@ pub async fn get_random_image(config: &Config) -> (String, Vec<u8>) {
 
 pub async fn cache_refresh(config: Config) {
     loop {
-        tokio::time::sleep(Duration::from_secs(86400)).await;
         get_s3_listing(&config).await;
+        tokio::time::sleep(Duration::from_secs(86400)).await;
     }
 }
 
