@@ -3,7 +3,7 @@ name = "framelabs-s3-server"
 version = "2.0.0"
 edition = "2024"
 license = "MIT"
-rust-version = "1.87"
+rust-version = "1.88"
 [dependencies]
 aws-config = { version = "1", default-features = false, features = [
     "behavior-version-latest",
