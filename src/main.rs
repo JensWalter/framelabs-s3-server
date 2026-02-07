@@ -1,7 +1,7 @@
 use ab_glyph::{FontRef, PxScale};
 use aws_config::Region;
+use aws_credential_types::Credentials;
 use aws_sdk_s3::{Client, config::SharedCredentialsProvider};
-use aws_util::StaticCredentials;
 use axum::{
     Router,
     extract::{Query, State},
@@ -17,7 +17,6 @@ use serde::Deserialize;
 use std::{io::Cursor, time::Instant};
 use utils::{compress, generate_white_image, get_random_image, resize, to_raw};
 
-mod aws_util;
 mod utils;
 
 #[derive(Deserialize)]
@@ -187,13 +186,11 @@ async fn main() {
     let access_key = std::env::var("ACCESS_KEY").expect("ACCESS_KEY not set in environment");
     let secret_key = std::env::var("SECRET_KEY").expect("SECRET_KEY not set in environment");
 
+    let creds = Credentials::from_keys(access_key, secret_key, None);
     let config = aws_config::SdkConfig::builder()
         .use_dual_stack(true)
         .region(Region::new(region))
-        .credentials_provider(SharedCredentialsProvider::new(StaticCredentials {
-            access_key,
-            secret_key,
-        }))
+        .credentials_provider(SharedCredentialsProvider::new(creds))
         .build();
 
     let client = Client::new(&config);
