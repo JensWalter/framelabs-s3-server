@@ -117,10 +117,10 @@ async fn handler(
         let font = FontRef::try_from_slice(font_bytes).unwrap();
         let scale = PxScale { x: 80.0, y: 80.0 };
 
-        let display_title = key.split_once('/').map(|(_, rest)| rest).unwrap_or(&key);
+        let display_key = key.splitn(3, '/').last().unwrap_or(&key);
 
         // calculate average brightness of the background where the text will be placed
-        let (text_w, text_h) = text_size(scale, &font, display_title);
+        let (text_w, text_h) = text_size(scale, &font, display_key);
         let mut total_brightness: u64 = 0;
         let mut pixel_count: u64 = 0;
         let start_x = 10;
@@ -142,11 +142,22 @@ async fn handler(
             255
         };
 
-        let color = if avg_brightness < 128 {
-            Luma([255u8])
+        let (color, shadow_color) = if avg_brightness < 128 {
+            (Luma([255u8]), Luma([0u8]))
         } else {
-            Luma([0u8])
+            (Luma([0u8]), Luma([255u8]))
         };
+
+        // Draw shadow
+        draw_text_mut(
+            &mut background,
+            shadow_color,
+            start_x as i32 + 4,
+            start_y as i32 + 4,
+            scale,
+            &font,
+            display_key,
+        );
 
         draw_text_mut(
             &mut background,
@@ -155,7 +166,7 @@ async fn handler(
             start_y as i32,
             scale,
             &font,
-            display_title,
+            display_key,
         );
     }
     // rotate image
