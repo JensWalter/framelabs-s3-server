@@ -1,3 +1,4 @@
+use ab_glyph::{FontRef, PxScale};
 use aws_config::Region;
 use aws_sdk_s3::{Client, config::SharedCredentialsProvider};
 use aws_util::StaticCredentials;
@@ -7,7 +8,8 @@ use axum::{
     http::StatusCode,
     routing::get,
 };
-use image::{GenericImage, ImageReader};
+use image::{GenericImage, ImageReader, Luma};
+use imageproc::drawing::draw_text_mut;
 use libheif_rs::{
     ColorSpace, CompressionFormat, DecodingOptions, EncodingOptions, HeifContext, LibHeif,
 };
@@ -110,7 +112,26 @@ async fn handler(
     let offset_x = if img_w == 1600 { 0 } else { (1600 - img_w) / 2 };
     let offset_y = if img_h == 1200 { 0 } else { (1200 - img_h) / 2 };
     background.copy_from(&img, offset_x, offset_y).unwrap();
-    let bytes = background.to_vec();
+    // add file name to the image
+    if std::env::var("ADD_FILENAME").is_ok() {
+        let font_bytes = include_bytes!("../assets/fonts/Roboto-Regular.ttf");
+        let font = FontRef::try_from_slice(font_bytes).unwrap();
+        let scale = PxScale { x: 20.0, y: 20.0 };
+        draw_text_mut(
+            &mut background,
+            Luma([0u8]),
+            10,
+            1170,
+            scale,
+            &font,
+            &filename,
+        );
+    }
+    // rotate image
+    if std::env::var("ROTATE_180").is_ok() {
+        background = image::imageops::rotate180(&background);
+    }
+    let bytes = background.into_vec();
     // convert
     let x = to_raw(bytes);
     println!("image converted: {:?}", now.elapsed());
@@ -152,6 +173,10 @@ async fn main() {
         client,
         secret: std::env::var("SECRET").ok(),
     };
+
+    // spawn cache refresh task
+    tokio::spawn(utils::cache_refresh(cfg.clone()));
+
     let app = Router::new().route("/", get(handler)).with_state(cfg);
     let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap();
     println!("listening on {}", listener.local_addr().unwrap());

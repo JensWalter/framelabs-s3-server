@@ -1,8 +1,10 @@
 use crate::Config;
+use cached::proc_macro::cached;
 use flate2::{Compression, write::ZlibEncoder};
 use image::{DynamicImage, GrayImage};
 use rand::Rng;
 use std::io::Write;
+use std::time::Duration;
 
 pub fn resize(img: DynamicImage) -> DynamicImage {
     img.resize(1600, 1200, image::imageops::FilterType::Nearest)
@@ -31,34 +33,62 @@ pub fn compress(raw: Vec<u8>) -> Vec<u8> {
 }
 
 pub async fn get_random_image(config: &Config) -> (String, Vec<u8>) {
-    let result = config
-        .client
-        .list_objects_v2()
-        .bucket(config.bucket_name.clone())
-        .prefix(config.prefix.clone().unwrap_or_default())
-        .send()
-        .await
-        .unwrap();
-    let count = result.key_count.unwrap();
+    let all = get_s3_listing(config).await;
+    let count = all.len();
     let n = {
         let mut rng = rand::rng();
         rng.random_range(0..count)
     };
-    let all = result.contents();
-    let obj = all.get(n as usize).unwrap();
-    let key = obj.key.clone().unwrap();
+    let key = all.get(n as usize).unwrap();
     println!("downloading {key}");
     let result = config
         .client
         .get_object()
         .bucket(config.bucket_name.clone())
-        .key(&key)
+        .key(key)
         .send()
         .await
         .unwrap();
     let content = result.body.collect().await.unwrap().to_vec();
     println!("fetched {} bytes", content.len());
-    (key, content)
+    (key.clone(), content)
+}
+
+pub async fn cache_refresh(config: Config) {
+    loop {
+        tokio::time::sleep(Duration::from_secs(86400)).await;
+        get_s3_listing(&config).await;
+    }
+}
+
+/// cache the s3 listing for 3 days
+#[cached(time = 259200, key = "bool", convert = r#"{ true }"#)]
+async fn get_s3_listing(config: &Config) -> Vec<String> {
+    let mut result = vec![];
+    let mut continuation_token = None;
+
+    loop {
+        let list_output = config
+            .client
+            .list_objects_v2()
+            .bucket(config.bucket_name.clone())
+            .prefix(config.prefix.clone().unwrap_or_default())
+            .set_continuation_token(continuation_token)
+            .send()
+            .await
+            .unwrap();
+
+        for obj in list_output.contents() {
+            result.push(obj.key.clone().unwrap());
+        }
+
+        if list_output.next_continuation_token.is_none() {
+            break;
+        }
+        continuation_token = list_output.next_continuation_token;
+    }
+
+    result
 }
 
 pub fn generate_white_image() -> image::ImageBuffer<image::Luma<u8>, Vec<u8>> {

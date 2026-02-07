@@ -11,6 +11,8 @@ A S3 based image provider for the framelabs picture frame
 | REGION | optinal | AWS region, default to eu-central-1 |
 | ACCESS_KEY | required | AWS access key |
 | SECRET_KEY | required | AWS secret key |
+| ADD_FILENAME | optional | add the filename to the picture (bottom left) |
+| ROTATE_180 | optional | rotates the image by 180 degress |
 
 # deployment docker
 
