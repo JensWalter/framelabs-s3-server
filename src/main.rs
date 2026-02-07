@@ -9,7 +9,7 @@ use axum::{
     routing::get,
 };
 use image::{GenericImage, ImageReader, Luma};
-use imageproc::drawing::draw_text_mut;
+use imageproc::drawing::{draw_text_mut, text_size};
 use libheif_rs::{
     ColorSpace, CompressionFormat, DecodingOptions, EncodingOptions, HeifContext, LibHeif,
 };
@@ -117,11 +117,41 @@ async fn handler(
         let font_bytes = include_bytes!("../assets/fonts/Roboto-Regular.ttf");
         let font = FontRef::try_from_slice(font_bytes).unwrap();
         let scale = PxScale { x: 20.0, y: 20.0 };
+
+        // calculate average brightness of the background where the text will be placed
+        let (text_w, text_h) = text_size(scale, &font, &filename);
+        let mut total_brightness: u64 = 0;
+        let mut pixel_count: u64 = 0;
+        let start_x = 10;
+        let start_y = 1170;
+        let end_x = (start_x + text_w).min(background.width());
+        let end_y = (start_y + text_h).min(background.height());
+
+        for y in start_y..end_y {
+            for x in start_x..end_x {
+                let pixel = background.get_pixel(x, y);
+                total_brightness += pixel[0] as u64;
+                pixel_count += 1;
+            }
+        }
+
+        let avg_brightness = if pixel_count > 0 {
+            total_brightness / pixel_count
+        } else {
+            255
+        };
+
+        let color = if avg_brightness < 128 {
+            Luma([255u8])
+        } else {
+            Luma([0u8])
+        };
+
         draw_text_mut(
             &mut background,
-            Luma([0u8]),
-            10,
-            1170,
+            color,
+            start_x as i32,
+            start_y as i32,
             scale,
             &font,
             &filename,
