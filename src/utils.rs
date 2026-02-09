@@ -2,7 +2,7 @@ use crate::Config;
 use cached::proc_macro::cached;
 use flate2::{Compression, write::ZlibEncoder};
 use image::{DynamicImage, GrayImage};
-use rand::Rng;
+use rand::RngExt;
 use std::io::Write;
 use std::time::Duration;
 
