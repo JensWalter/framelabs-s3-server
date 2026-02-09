@@ -3,8 +3,9 @@ RUN apt-get update && apt-get install -y zlib1g-dev build-essential libnuma-dev 
 RUN curl https://sh.rustup.rs -sSf | bash -s -- -y
 ENV PATH="/root/.cargo/bin:${PATH}"
 WORKDIR /app
-ADD Cargo.toml .
+ADD Cargo.toml Cargo.lock .
 ADD src src
+ADD assets assets
 RUN cargo build -r
 
 FROM ubuntu:24.04 AS runner
