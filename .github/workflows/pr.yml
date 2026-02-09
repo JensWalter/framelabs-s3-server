@@ -1,9 +1,6 @@
-name: build
+name: pr
 on:
-  workflow_dispatch:
-  push:
-    branches:
-    - main
+  pull_request:
 jobs:
   fmt:
     permissions: read-all
