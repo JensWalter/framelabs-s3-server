@@ -94,7 +94,7 @@ jobs:
         cache: false
     - run: cargo build --release
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v4
     - name: build container
       run: |
         docker build -t framelabs-s3-server .
