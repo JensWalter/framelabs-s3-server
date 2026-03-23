@@ -16,7 +16,7 @@ aws-sdk-s3 = { version = "1", default-features = false, features = [
     "sigv4a",
 ] }
 axum = { version = "0.8", features = ["macros", "http2"] }
-cached = { version = "0.58", features = ["async"] }
+cached = { version = "0.59", features = ["async"] }
 image = { version = "0.25" }
 rand = "0.10"
 tokio = { version = "1", features = ["full"] }
