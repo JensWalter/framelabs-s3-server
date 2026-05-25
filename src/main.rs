@@ -140,11 +140,7 @@ async fn handler(
             }
         }
 
-        let avg_brightness = if pixel_count > 0 {
-            total_brightness / pixel_count
-        } else {
-            255
-        };
+        let avg_brightness = total_brightness.checked_div(pixel_count).unwrap_or(255);
 
         let (color, shadow_color) = if avg_brightness < 128 {
             (Luma([255u8]), Luma([0u8]))

@@ -3,7 +3,8 @@ name = "framelabs-s3-server"
 version = "2.0.0"
 edition = "2024"
 license = "MIT"
-rust-version = "1.88"
+rust-version = "1.92"
+
 [dependencies]
 aws-config = { version = "1", default-features = false, features = [
     "behavior-version-latest",
@@ -16,7 +17,7 @@ aws-sdk-s3 = { version = "1", default-features = false, features = [
     "sigv4a",
 ] }
 axum = { version = "0.8", features = ["macros", "http2"] }
-cached = { version = "0.59", features = ["async"] }
+cached = { version = "1.1", features = ["async"] }
 image = { version = "0.25" }
 rand = "0.10"
 tokio = { version = "1", features = ["full"] }

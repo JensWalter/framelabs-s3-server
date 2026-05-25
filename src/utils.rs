@@ -1,5 +1,5 @@
 use crate::Config;
-use cached::proc_macro::cached;
+use cached::macros::cached;
 use flate2::{Compression, write::ZlibEncoder};
 use image::{DynamicImage, GrayImage};
 use rand::RngExt;
@@ -62,7 +62,7 @@ pub async fn cache_refresh(config: Config) {
 }
 
 /// cache the s3 listing for 3 days
-#[cached(time = 259200, key = "bool", convert = r#"{ true }"#)]
+#[cached(ttl = 259200, key = "bool", convert = r#"{ true }"#)]
 async fn get_s3_listing(config: &Config) -> Vec<String> {
     let mut result = vec![];
     let mut continuation_token = None;
