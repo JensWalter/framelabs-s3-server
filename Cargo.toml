@@ -27,7 +27,7 @@ imageproc = "0.27"
 ab_glyph = "0.2"
 
 [target.'cfg(target_os = "macos")'.dependencies]
-libheif-rs = { version = "2" }
+libheif-rs = { version = "3" }
 
 [target.'cfg(not(target_os = "macos"))'.dependencies]
 libheif-rs = { version = "2", features = ["embedded-libheif"] }
