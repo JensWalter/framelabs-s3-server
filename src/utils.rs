@@ -62,7 +62,11 @@ pub async fn cache_refresh(config: Config) {
 }
 
 /// cache the s3 listing for 3 days
-#[cached(ttl = 259200, key = "bool", convert = r#"{ true }"#)]
+#[cached(
+    ttl = "std::time::Duration::from_secs(259200)",
+    key = "bool",
+    convert = r#"{ true }"#
+)]
 async fn get_s3_listing(config: &Config) -> Vec<String> {
     let mut result = vec![];
     let mut continuation_token = None;
